@@ -6,17 +6,16 @@ const app=express();
 
 const server=http.createServer(app);
 var io=socketIO(server);
-app.use(express.static(path.join(__dirname,"/../public")))
-
+app.use(express.static(path.join(__dirname,"/../public")));
 io.on("connection",(socket)=>{
   console.log("New user connected");
-  socket.emit("newMessage",{
-    from:"mike",
-    text:"Hey whats goin on",
-    createdAt:123
-  });
   socket.on("createMessage",function(message){
    console.log("Create Message", message);
+   io.emit("newMessage",{
+    from:  message.from,
+    text: message.text,
+    createdAt: new Date().getTime()
+   });
   });
 
   socket.on("disconnect",()=>{
